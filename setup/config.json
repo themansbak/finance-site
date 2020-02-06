@@ -1,0 +1,7 @@
+{
+	"db_connection": {
+		"user"		: "root",
+		"pwd"		: "root",
+		"host"		: "localhost"
+	}
+}

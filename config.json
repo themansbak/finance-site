@@ -1,7 +1,0 @@
-{
-	"db_connection": {
-		"user"		: "DB_USERNAME",
-		"pwd"		: "DB_PASSWORD",
-		"host"		: "DB_HOST"
-	}
-}
