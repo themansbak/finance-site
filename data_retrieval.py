@@ -2,6 +2,7 @@
 
 """
 Intended for moving/storing transaction csv into database
+Need to setup the database on new environments
 
 Alex Man
 """
@@ -13,25 +14,29 @@ from datetime import datetime
 import sys
 import os
 import time
+import json
 
 read_file = True
 db_debug = False
 
-"""
-Need to setup the database on new environments
-"""
 
 datafile = os.path.expanduser('~/finance-site/download.csv')
 
 if len(sys.argv) < 2:
-	print("python data_retrieval.py [csv-file]")
+	print("python3 data_retrieval.py [csv-file]")
 	exit()
+
+print('Opening config file')
+with open('config.json', 'r') as infile:
+	configs = json.load(infile)
+	print(configs)
 
 print('Connecting to database')
 conn = mysql.connector.connect(
-	user		='root',
-	password	='root',
-	host		='localhost')
+	user		= configs['db_connection']['user'],
+	password	= configs['db_connection']['pwd'],
+	host		= configs['db_connection']['host'])
+
 
 DB_NAME			= "transactions"
 TABLE_NAME 		= "transaction"
@@ -40,6 +45,7 @@ TABLE_NAME 		= "transaction"
 cursor = conn.cursor()
 cursor.execute('set GLOBAL max_allowed_packet=67197764')
 cursor.execute('set GLOBAL net_read_timeout=60')
+
 
 if not db_debug:
 	try:
@@ -62,7 +68,7 @@ if not db_debug:
 		statement = ("create table {:s} "
 			"(id int auto_increment primary key, date DATE, "
 			"transaction varchar(255), name longtext, memo "
-			"longtext, amount int);".format(TABLE_NAME))
+			"longtext, amount double);".format(TABLE_NAME))
 		cursor.execute(statement)
 	except Exception as err:
 		print('Could not create table: ', err)
@@ -74,23 +80,23 @@ if (read_file):
 	# Date, Transaction, Name, Memo, Amount
 	for index, data in df.iterrows():
 		date 		= datetime.strptime(data['Date'], '%m/%d/%Y').strftime('%Y-%m-%d')
-		print(date)
 		transaction = data['Transaction']
-		name 		= data['Name']
+		name 		= data['Name'].replace('\'','-')
 		memo 		= data['Memo']
 		amount 		= data['Amount']
 		try:
-			# statement = "insert into {} (Date) values (STR_TO_DATE(\'{}\', '%m/%d/%y'));".format(TABLE_NAME, date)
-			# statement = "insert into {} (Date) values ('{}');".format(TABLE_NAME, date)
-			# print(statement)
-			statement = ("insert into {} (Date, Transaction, Name, Memo, Amount ",
-				"values (\'{}\', \'{}\', \'{}\', \'{}\', \'{}\');".format(
-					TABLE_NAME, date, transaction, name, memo, amount))
+			statement = "insert into {} (Date, Memo, Name) values ('{}', '{}', '{}')".format(
+				TABLE_NAME, date, memo, name)
 			cursor.execute(statement)
+			conn.commit()
+
+			statement = "update {} set Transaction='{}', Amount='{}' where Memo='{}'".format(
+				TABLE_NAME, transaction, amount, memo)
+			cursor.execute(statement)
+			conn.commit()
 		except Exception as err:
 			print('Error inserting: ', err)
 			break
-		time.sleep(1)
 
 conn.close()
 
