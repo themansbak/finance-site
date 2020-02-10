@@ -1,0 +1,23 @@
+{
+  "name": "finance-site",
+  "version": "1.0.0",
+  "description": "Monitor spendings and track bills",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodejs index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/themansbak/finance-site.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/themansbak/finance-site/issues"
+  },
+  "homepage": "https://github.com/themansbak/finance-site#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

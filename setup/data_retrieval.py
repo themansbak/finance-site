@@ -16,7 +16,7 @@ import os
 import time
 import json
 
-read_file = True
+read_file = False
 db_debug = False
 
 
@@ -40,7 +40,7 @@ conn = mysql.connector.connect(
 
 DB_NAME			= "transactions"
 TABLE_NAME 		= "transaction"
-
+LOGIN_TABLE		= "login"
 
 cursor = conn.cursor()
 cursor.execute('set GLOBAL max_allowed_packet=67197764')
@@ -73,7 +73,18 @@ if not db_debug:
 	except Exception as err:
 		print('Could not create table: ', err)
 	else:
-		print('Created table')
+		print('Created {:s} table'.format(TABLE_TABLE))
+
+	try:
+		statement = ("create table {:s} "
+			"(username varchar(255), "
+			"password varchar(255), "
+			"salt varchar(5));".format(LOGIN_TABLE))
+		cursor.execute(statement)
+	except Exception as err:
+		print('Could not create table: ', err)
+	else:
+		print('Created {:s} table'.format(LOGIN_TABLE))
 
 if (read_file):
 	df = pd.read_csv(datafile)
