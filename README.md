@@ -4,6 +4,10 @@ Monitor spendings and track bills
 # Dev-platform
 Ubuntu 16.04
 
+# To run
+
+server: 		: npm start
+
 # Requirements
 python 3.5.2
 

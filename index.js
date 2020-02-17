@@ -13,18 +13,9 @@ const pool = mysql.createPool({
 	database: 	'transactions'
 });
 
-// pool.connect((err) => {
-// 	if (err) {
-// 		console.error(err.code.bold.red.inverse);
-// 	} else {
-// 		console.log('Db connection established'.green.inverse);
-// 	}
-// });
-
-
 app.get('/', (req, res) => res.send('Hello World'));
 
-app.get('/transactions/all', (req, res) => {
+app.get('/transactions/all/:uId', (req, res) => {
 	const statement = 'select * from transaction;';
 	pool.query(statement, function (err, results, fields) {
 		if (err) {

@@ -16,11 +16,11 @@ import os
 import time
 import json
 
-read_file = False
+read_file = True
 db_debug = False
 
 
-datafile = os.path.expanduser('~/finance-site/download.csv')
+datafile = os.path.expanduser(os.getcwd() + '/download.csv')
 
 if len(sys.argv) < 2:
 	print("python3 data_retrieval.py [csv-file]")
@@ -66,14 +66,14 @@ if not db_debug:
 
 	try: 
 		statement = ("create table {:s} "
-			"(id int auto_increment primary key, date DATE, "
-			"transaction varchar(255), name longtext, memo "
+			"(id int auto_increment primary key, username varchar(255), "
+			"date DATE, transaction varchar(255), name longtext, memo "
 			"longtext, amount double);".format(TABLE_NAME))
 		cursor.execute(statement)
 	except Exception as err:
 		print('Could not create table: ', err)
 	else:
-		print('Created {:s} table'.format(TABLE_TABLE))
+		print('Created {:s} table'.format(TABLE_NAME))
 
 	try:
 		statement = ("create table {:s} "
